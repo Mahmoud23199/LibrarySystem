@@ -1,0 +1,11 @@
+﻿@model LibrarySystem.ViewModel.BorrowBookViewModel
+
+
+<form id="borrowForm" method="post">
+    <div class="form-group">
+        <label for="UserId">User ID</label>
+        <input type="text" class="form-control" id="UserId" name="UserId" required />
+    </div>
+    <input type="hidden" id="BookId" name="BookId" value="@Model.BookId" />
+    <button type="submit" class="btn btn-primary">Borrow</button>
+</form>
