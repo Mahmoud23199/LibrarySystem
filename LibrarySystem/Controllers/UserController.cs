@@ -7,16 +7,19 @@ namespace LibrarySystem.Controllers
 {
     public class UserController : Controller
     {
+        private readonly IUserService _userService;
         private readonly ILibraryService _libraryService;
 
-        public UserController(ILibraryService libraryService)
+
+        public UserController(IUserService userService, ILibraryService libraryService)
         {
+            _userService = userService;
             _libraryService = libraryService;
         }
         // GET: UserController
-        public ActionResult Index(int itemId)
+        public async Task<ActionResult> Index(int Id)
         {
-            var book =_libraryService.GetBookAsync(itemId);
+            var book =await _libraryService.GetBookAsync(Id);
             if (book == null)
             {
                 return NotFound();
@@ -40,16 +43,22 @@ namespace LibrarySystem.Controllers
         // POST: UserController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create(string UserName)
         {
-            try
+           var IsExist=await _userService.GetUserByIdAsync(UserName);
+            if (IsExist ==null)
             {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
+                var user = new User
+                {
+                    Name = UserName,
+                };
+                _userService.AddUserAsync(user);
+
+                //some logic
                 return View();
             }
+            return View();
+
         }
 
         // GET: UserController/Edit/5

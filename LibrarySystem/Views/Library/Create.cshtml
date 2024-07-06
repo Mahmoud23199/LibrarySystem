@@ -24,7 +24,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="NumberOfCopies" class="control-label"></label>
-                <input asp-for="NumberOfCopies" class="form-control" />
+                <input asp-for="NumberOfCopies" class="form-control" min="1" />
                 <span asp-validation-for="NumberOfCopies" class="text-danger"></span>
             </div>
             <div class="form-group pt-2">
