@@ -15,5 +15,6 @@ namespace LibrarySystem.Models
         public DbSet<User> Users { get; set; }
         public DbSet<BorrowedBook> BorrowedBooks { get; set; }
         public DbSet<LibrarySystem.ViewModel.BookViewModel> BookViewModel { get; set; } = default!;
+        
     }
 }
