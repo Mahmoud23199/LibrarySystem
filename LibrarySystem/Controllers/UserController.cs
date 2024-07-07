@@ -97,13 +97,14 @@ namespace LibrarySystem.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> ReturnBook(int userId, int bookCopyId)
+        [HttpGet]
+        public async Task<IActionResult> ReturnBook(int userId, int bookCopyId,string UserName)
         {
             try
             {
                 await _libraryService.ReturnBookAsync(userId, bookCopyId);
-                return RedirectToAction("Index");
+
+                return RedirectToAction("borrowerUserList",new { UserName });
             }
             catch (Exception ex)
             {

@@ -42,7 +42,7 @@ else
                         }
                         else
                         {
-                            <a asp-controller="User" asp-action="ReturnBook" asp-route-userId="@Model.UserId" asp-route-bookCopyId="@book.bookCopyId" class="btn btn-outline-success">Return Book</a>
+                            <a asp-controller="User" asp-action="ReturnBook" asp-route-userId="@Model.UserId" asp-route-bookCopyId="@book.bookCopyId" asp-route-UserName="@Model.User" class="btn btn-outline-success">Return Book</a>
                         }
                     </td>
                 </tr>
