@@ -45,13 +45,41 @@ namespace LibrarySystem.Controllers
                 return View();
             }
         }
+        public async Task<IActionResult> Update(int Id)
+        {
+            return View(await _libraryService.GetBookAsync(Id));
+        }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateBook(Book book)
+        public async Task<IActionResult> UpdateBook(BookViewModel bookView)
         {
             try
             {
-                await _libraryService.UpdateBookAsync(book);
+                var book = new Book
+                {
+                    Author = bookView.AuthorName, Name = bookView.Name, Id = bookView.Id
+                };
+                await _libraryService.UpdateBookAsync(book,bookView.NumberOfCopies);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ViewData["ErrorMessage"] = ex.Message;
+                return View();
+            }
+        }
+       
+        public async Task<IActionResult> Delete(int Id)
+        {
+            return View(await _libraryService.GetBookAsync(Id));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteBook(int Id)
+        {
+            try
+            {
+                await _libraryService.DeleteBookAsync(Id);
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -61,50 +89,9 @@ namespace LibrarySystem.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> DeleteBook(int bookId)
-        {
-            try
-            {
-                await _libraryService.DeleteBookAsync(bookId);
-                return RedirectToAction("Index");
-            }
-            catch (Exception ex)
-            {
-                ViewData["ErrorMessage"] = ex.Message;
-                return View();
-            }
-        }
+      
 
-        [HttpPost]
-        public async Task<IActionResult> BorrowBook(int userId, int bookId)
-        {
-            try
-            {
-                await _libraryService.BorrowBookAsync(userId, bookId);
-                return RedirectToAction("Index");
-            }
-            catch (Exception ex)
-            {
-                ViewData["ErrorMessage"] = ex.Message;
-                return View();
-            }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> ReturnBook(int userId, int bookCopyId)
-        {
-            try
-            {
-                await _libraryService.ReturnBookAsync(userId, bookCopyId);
-                return RedirectToAction("Index");
-            }
-            catch (Exception ex)
-            {
-                ViewData["ErrorMessage"] = ex.Message;
-                return View();
-            }
-        }
+      
     }
 }
 

@@ -9,6 +9,8 @@
 <p>
     <a asp-action="Create" class="btn btn-outline-primary">Create Book</a>
 </p>
+
+<a asp-action="borrowerUser" asp-controller="User" style="position:fixed;top:70px;right:10px" class="btn btn-outline-success">List of borrowed books</a>
 <table class="table">
     <thead>
         <tr>
@@ -25,23 +27,47 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AuthorName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NumberOfCopies)
-            </td>
-            <td>
-                    <a asp-controller="User" asp-action="Index" asp-route-id="@item.Id" class="btn btn-outline-success">Borrow a book</a> |
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning">Edit</a> |
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AuthorName)
+                </td>
+                <td>
+                    @if (item.NumberOfCopies == 1)
+                    {
+                        <span class="text-warning ml-2">Last copy</span>
+                    }
+                    else if (item.NumberOfCopies == 0)
+                    {
+                        <span class="text-danger ml-2">Unavailable</span>
+                    } 
+                    else{
+                        @Html.DisplayFor(modelItem => item.NumberOfCopies)
+                    }
+                </td>
+                <td>
+                    @if (item.NumberOfCopies == 0)
+                    {
+                        <a asp-controller="User" asp-action="Index" asp-route-id="@item.Id" class="btn btn-outline-success disabled">
+                            Borrow a book
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-controller="User" asp-action="Index" asp-route-id="@item.Id" class="btn btn-outline-success">
+                            Borrow a book
+                        </a>
+                    }
+                    |
+                    <a asp-action="Update" asp-route-id="@item.Id" class="btn btn-outline-warning">Edit</a> |
                     <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger">Delete</a>
-            </td>
-        </tr>
-}
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+

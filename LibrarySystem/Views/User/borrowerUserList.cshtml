@@ -1,0 +1,55 @@
+﻿@model LibrarySystem.ViewModel.BorrowedViewModel
+
+<h2>@Model.User's Borrowed Books</h2>
+
+@if (ViewData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @ViewData["ErrorMessage"]
+    </div>
+}
+
+@if (Model.BorrowBooks == null || !Model.BorrowBooks.Any())
+{
+    <div class="alert alert-info">
+        You haven't borrowed any books.
+    </div>
+    <a asp-action="Index" asp-controller="Library" class="btn btn-outline-primary">Back to Library</a>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Book Name</th>
+                <th>Book Copy Code</th>
+                <th>Borrowed Date</th>
+                <th>Returned Date</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in Model.BorrowBooks)
+            {
+                <tr>
+                    <td>@book.bookname</td>
+                    <td>@book.BookCopyCode</td>
+                    <td>@book.BorrowedDate.ToShortDateString()</td>
+                    <td>
+                        @if (book.ReturnedDate.HasValue)
+                        {
+                            @book.ReturnedDate.Value.ToShortDateString()
+                        }
+                        else
+                        {
+                            <a asp-controller="User" asp-action="ReturnBook" asp-route-userId="@Model.UserId" asp-route-bookCopyId="@book.bookCopyId" class="btn btn-outline-success">Return Book</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div>
+        <a asp-action="Index" asp-controller="Library" class="btn btn-outline-primary">Back to Library</a>
+    </div>
+}

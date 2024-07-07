@@ -12,6 +12,8 @@ builder.Services.AddDbContext<LibraryContext>(options =>
 
 //--
 builder.Services.AddScoped<ILibraryService, LibraryService>();
+builder.Services.AddScoped<IUserService, UserService>();
+
 
 var app = builder.Build();
 

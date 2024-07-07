@@ -25,82 +25,92 @@ namespace LibrarySystem.Controllers
                 return NotFound();
             }
 
+            if (TempData["ErrorMessage"] != null)
+            {
+                ViewData["ErrorMessage"] = TempData["ErrorMessage"].ToString();
+            }
+
             return View(book);
-        }
-
-        // GET: UserController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: UserController/Create
-        public ActionResult Create()
-        {
-            return View();
         }
 
         // POST: UserController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(string UserName)
+        public async Task<ActionResult> Create(string UserName,int bookId)
         {
-           var IsExist=await _userService.GetUserByIdAsync(UserName);
+           var IsExist=await _userService.GetUserAsync(UserName);
+
             if (IsExist ==null)
             {
                 var user = new User
                 {
                     Name = UserName,
                 };
-                _userService.AddUserAsync(user);
+               await _userService.AddUserAsync(user);
 
                 //some logic
-                return View();
+                return RedirectToAction("BorrowBook", new { userId =user.Id, bookId=bookId });
             }
-            return View();
+            return RedirectToAction("BorrowBook", new { userId = IsExist.Id, bookId = bookId });
+
 
         }
-
-        // GET: UserController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: UserController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        [HttpGet]
+        public async Task<IActionResult> BorrowBook(int userId, int bookId)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                await _libraryService.BorrowBookAsync(userId, bookId);
+                return RedirectToAction("Index","Library");
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Index", new { Id = bookId });
             }
         }
-
-        // GET: UserController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult borrowerUser()
         {
+
+            if (TempData["ErrorMessage"] != null)
+            {
+                ViewData["ErrorMessage"] = TempData["ErrorMessage"].ToString();
+            }
+
             return View();
         }
 
-        // POST: UserController/Delete/5
+        [HttpGet]
+        public async Task<ActionResult> borrowerUserList(string UserName)
+        {
+
+            try
+            {
+                var viewModel = await _userService.GetUserWithBorrowedBooksAsync(UserName);
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("borrowerUser"); 
+            }
+        }
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> ReturnBook(int userId, int bookCopyId)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                await _libraryService.ReturnBookAsync(userId, bookCopyId);
+                return RedirectToAction("Index");
             }
-            catch
+            catch (Exception ex)
             {
+                ViewData["ErrorMessage"] = ex.Message;
                 return View();
             }
         }
+
     }
 }

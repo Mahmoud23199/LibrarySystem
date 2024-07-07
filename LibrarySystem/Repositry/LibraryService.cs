@@ -31,8 +31,25 @@ namespace LibrarySystem.Repositry
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateBookAsync(Book book)
+        public async Task UpdateBookAsync(Book book, int numberOfCopies)
         {
+            var updatedBook = await GetBookAsync(book.Id);
+
+            if(numberOfCopies > updatedBook.NumberOfCopies)
+            {
+                var newCopys = numberOfCopies - updatedBook.NumberOfCopies;
+
+                for (int i = 0; i < newCopys; i++)
+                {
+                    _context.BookCopies.Add(new BookCopy
+                    {
+                        BookId = book.Id,
+                        IsBorrowed = false,
+                        Code = Guid.NewGuid().ToString()
+                    });
+                }
+
+            }
             _context.Books.Update(book);
             await _context.SaveChangesAsync();
         }
@@ -127,7 +144,7 @@ namespace LibrarySystem.Repositry
                     Id = b.Id,
                     Name = b.Name,
                     AuthorName = b.Author,
-                    NumberOfCopies = b.Copies.Count,
+                    NumberOfCopies = b.Copies.Where(i=>i.IsBorrowed==false).Count(),
                     BookCopies = b.Copies.Select(bc => new BookCopyViewModel
                     {
                         Id = bc.Id,

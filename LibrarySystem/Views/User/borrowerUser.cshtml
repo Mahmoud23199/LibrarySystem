@@ -1,30 +1,25 @@
-﻿@model LibrarySystem.ViewModel.BookViewModel
-
-
-@if (ViewData["ErrorMessage"] != null)
+﻿@if (ViewData["ErrorMessage"] != null)
 {
     <div class="alert alert-danger">
         @ViewData["ErrorMessage"]
     </div>
 }
 
-<h2>Enter your Name to Borrowed @Model.Name book </h2>
+<h2>Enter your Name Please</h2>
 <div class="modal-body">
-   
-    <form asp-action="Create" asp-controller="User">
+
+    <form asp-action="borrowerUserList" asp-controller="User" method="get">
         <div class="form-group">
             <label for="UserName">Your Name</label>
             <input type="text" class="form-control" id="UserName" name="UserName" required />
-
-            <input type="text" hidden class="form-control" id="bookId" name="bookId" value="@Model.Id" />
         </div>
-    
-        <button type="submit" class="btn btn-primary mt-4">Borrow</button>
+
+        <button type="submit" class="btn btn-primary mt-4">Enter</button>
     </form>
 </div>
 
 
 <div>
-   
+
     <a asp-action="Index" asp-controller="Library" class="btn btn-outline-primary">Back to List</a>
 </div>
